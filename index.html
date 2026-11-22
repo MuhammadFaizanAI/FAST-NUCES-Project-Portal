@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Managed By Aoun Malik — FAST NUCES CFD</title>
+  <script src="./config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    @keyframes progressSlide {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(300%); }
+    }
+    .animate-progress { animation: progressSlide 1.2s infinite ease-in-out; }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-enter { animation: fadeSlideUp 0.2s ease-out forwards; }
+  </style>
+</head>
+<body class="bg-slate-100/80 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-600 selection:text-white">
+
+  <!-- Top Sync Progress Bar -->
+  <div id="topLoader" class="fixed top-0 left-0 right-0 h-1 bg-indigo-950/20 overflow-hidden z-50 hidden">
+    <div class="h-full w-1/3 bg-gradient-to-r from-indigo-500 via-violet-500 to-emerald-400 animate-progress"></div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+  <!-- TOP NAVBAR -->
+  <header class="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center font-extrabold text-sm shadow-md shadow-indigo-500/20">
+          NU
+        </div>
+        <div>
+          <h1 id="brandMainTitle" class="font-bold text-base sm:text-lg tracking-tight leading-tight">Managed By Aoun Malik</h1>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <p id="brandSubTitle" class="text-xs text-slate-300 font-semibold tracking-wide">FAST NUCES CFD</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="userHeaderBadge" class="hidden flex items-center gap-2">
+        <div class="bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-xl flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+          <span id="loggedUserLabel" class="text-xs font-mono font-bold text-white"></span>
+        </div>
+        <button onclick="logoutStudent()"
+          class="inline-flex items-center gap-1 text-xs font-semibold bg-rose-500/15 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 px-3 py-2 rounded-xl transition">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Logout</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- AUTHENTICATION VIEW -->
+  <main id="authView" class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-14">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+
+      <!-- Left Info Panel -->
+      <div class="lg:col-span-6 space-y-6 animate-enter">
+        <span class="inline-flex items-center gap-2 text-xs font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 px-3.5 py-1.5 rounded-full">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Managed By Aoun Malik • FAST NUCES CFD
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+          Register your project group & find teammates effortlessly.
+        </h2>
+        <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+          Sign in with your <span class="font-mono font-semibold text-indigo-700">@cfd.nu.edu.pk</span> email, register your team with a partner, or mark your group <strong>Open for Partner</strong> to collaborate via WhatsApp.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
+          <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-start gap-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+              <i data-lucide="users" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-slate-900">Instant Group Setup</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">Add your partner right away or list your team open for requests.</p>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-start gap-3">
+            <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-slate-900">WhatsApp Collaboration</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">Connect directly with classmates looking for a partner.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Auth Card -->
+      <div class="lg:col-span-6">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200/80 overflow-hidden animate-enter">
+          <div class="grid grid-cols-2 p-1.5 bg-slate-100 border-b border-slate-200 text-xs sm:text-sm font-bold">
+            <button id="authTabLogin" onclick="switchAuthTab('login')"
+              class="py-3 rounded-2xl bg-white text-indigo-600 shadow-sm transition">
+              Student Login
+            </button>
+            <button id="authTabRegister" onclick="switchAuthTab('register')"
+              class="py-3 rounded-2xl text-slate-500 hover:text-slate-800 transition">
+              New Registration
+            </button>
+          </div>
+
+          <!-- Login Form -->
+          <form id="loginForm" class="p-6 sm:p-8 space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">Roll Number (Username)</label>
+              <div class="relative">
+                <i data-lucide="hash" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+                <input type="text" id="loginRoll" required placeholder="25P-0585"
+                  class="w-full font-mono uppercase bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-3.5 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">4-Digit PIN</label>
+              <div class="relative">
+                <i data-lucide="key-round" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+                <input type="password" id="loginPin" maxlength="6" required placeholder="••••"
+                  class="w-full font-mono bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-3.5 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+              </div>
+            </div>
+            <button type="submit" id="loginSubmitBtn"
+              class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2 mt-2">
+              <i data-lucide="arrow-right-circle" class="w-4 h-4"></i>
+              <span>Sign In to Portal</span>
+            </button>
+          </form>
+
+          <!-- Register Form (WhatsApp Optional) -->
+          <form id="registerForm" class="p-6 sm:p-8 space-y-3.5 hidden">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Full Name *</label>
+                <input type="text" id="regName" required placeholder="Muhammad Ali"
+                  class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Roll No (Username) *</label>
+                <input type="text" id="regRoll" required placeholder="25P-0585"
+                  class="w-full font-mono uppercase bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">University Email (@cfd.nu.edu.pk) *</label>
+              <input type="email" id="regEmail" required placeholder="f250585@cfd.nu.edu.pk"
+                class="w-full font-mono bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">
+                  WhatsApp <span class="text-slate-400 font-normal">(Optional)</span>
+                </label>
+                <input type="tel" id="regWhatsApp" placeholder="03001234567"
+                  class="w-full font-mono bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Create 4-Digit PIN *</label>
+                <input type="password" id="regPin" minlength="4" maxlength="6" required placeholder="1234"
+                  class="w-full font-mono bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+              </div>
+            </div>
+
+            <button type="submit" id="regSubmitBtn"
+              class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2 mt-2">
+              <i data-lucide="user-check" class="w-4 h-4"></i>
+              <span>Create Account & Continue</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- STUDENT DASHBOARD VIEW -->
+  <main id="dashboardView" class="hidden flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6 animate-enter">
+
+    <!-- Incoming Partner Requests Banner -->
+    <div id="incomingRequestsBox" class="hidden bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 rounded-2xl p-5 shadow-sm space-y-3">
+      <div class="flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center">
+          <i data-lucide="bell-ring" class="w-4 h-4"></i>
+        </span>
+        <div>
+          <h2 class="text-sm font-extrabold text-amber-950">Incoming Partner Requests</h2>
+          <p class="text-[11px] text-amber-800">Classmates requesting to join your open group.</p>
+        </div>
+      </div>
+      <div id="incomingRequestsList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+    </div>
+
+    <!-- Course Selection Control Bar -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex-1 min-w-[250px]">
+        <label class="block text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5">Select Course</label>
+        <div id="studentCourseDropdownWrap"></div>
+      </div>
+
+      <div id="courseMetaBox" class="flex flex-wrap items-center gap-2"></div>
+
+      <button id="studentRefreshBtn" onclick="refreshPortal(this)"
+        class="inline-flex items-center gap-1.5 text-xs bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl font-bold shadow-sm transition">
+        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+        <span>Refresh</span>
+      </button>
+    </div>
+
+    <!-- Empty Courses Fallback -->
+    <div id="noCoursesMsg" class="hidden bg-white p-12 rounded-2xl border border-dashed border-slate-300 text-center">
+      <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+        <i data-lucide="calendar-clock" class="w-6 h-6"></i>
+      </div>
+      <p class="text-sm font-bold text-slate-700">No Courses Available Yet</p>
+      <p class="text-xs text-slate-500 mt-1">No courses have been published for project registration yet.</p>
+    </div>
+
+    <!-- Main Course Workspace -->
+    <div id="courseContent" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left Column: My Group Card OR Register Group Form -->
+      <div class="lg:col-span-5">
+        <div id="myGroupCard" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80"></div>
+      </div>
+
+      <!-- Right Column: Partner Board + Registered Groups Directory -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- Open for Partner Board -->
+        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200/80">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <i data-lucide="user-plus" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h2 class="text-base font-extrabold text-slate-900">Open for Partner</h2>
+                <p class="text-xs text-slate-500">Send a partner request or collaborate via WhatsApp.</p>
+              </div>
+            </div>
+            <span id="openPartnerCount" class="text-xs font-mono bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full">0 Open</span>
+          </div>
+          <div id="partnerBoard" class="space-y-3"></div>
+        </div>
+
+        <!-- Registered Course Groups -->
+        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200/80">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900">Registered Course Groups</h2>
+              <p class="text-[11px] text-slate-500">Live overview of formed teams and open groups.</p>
+            </div>
+            <div class="flex gap-3 text-[11px] font-semibold">
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Open</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Complete</span>
+            </div>
+          </div>
+          <div id="groupsOverviewGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 bg-white/70 py-4 px-4 text-center text-xs text-slate-500 mt-10">
+    <span class="font-bold text-slate-700">Managed By Aoun Malik</span> • <span class="font-mono font-semibold text-indigo-700">FAST NUCES CFD</span>
+  </footer>
+
+  <!-- REQUEST TO JOIN MODAL -->
+  <div id="joinRequestModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full p-6 space-y-4 animate-enter">
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+          <i data-lucide="send" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Send Partner Request</h3>
+          <p id="joinModalSubtitle" class="text-xs text-slate-500"></p>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1.5">Message to Group Leader</label>
+        <textarea id="joinNoteInput" rows="3" placeholder="Assalam-o-Alaikum! I'd like to partner up with you..."
+          class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-1">
+        <button onclick="closeJoinModal()" class="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">Cancel</button>
+        <button id="sendJoinReqBtn" onclick="submitJoinRequest(this)"
+          class="px-5 py-2.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-sm inline-flex items-center gap-1.5">
+          <i data-lucide="send" class="w-3.5 h-3.5"></i>
+          <span>Send Request</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM DELETE GROUP MODAL -->
+  <div id="deleteGroupModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-sm w-full p-6 space-y-4 animate-enter">
+      <div class="w-11 h-11 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center">
+        <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-slate-900">Delete Your Group?</h3>
+        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Your group will be removed from this course so you can create or join another team.</p>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeDeleteGroupModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">Keep Group</button>
+        <button id="confirmDeleteGroupBtn" onclick="executeDeleteMyGroup(this)"
+          class="px-4 py-2 text-xs bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl inline-flex items-center gap-1.5">
+          <span>Yes, Delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CFG = window.PORTAL_CONFIG || {};
+    const SCRIPT_URL = CFG.SCRIPT_URL || "";
+    const LOCAL_DB_KEY = "fast_cfd_project_portal_v3";
+
+    if (CFG.MANAGER_TITLE) document.getElementById("brandMainTitle").textContent = CFG.MANAGER_TITLE;
+    if (CFG.CAMPUS_SUBTITLE) document.getElementById("brandSubTitle").textContent = CFG.CAMPUS_SUBTITLE;
+
+    let currentUser = JSON.parse(localStorage.getItem("fast_student_user") || "null");
+    let portalData = { courses: [], students: [], groups: [], requests: [] };
+    let selectedCourseId = "";
+    let isEditingMyGroup = false;
+    let pendingJoinTarget = null;
+    let pendingDeleteGroupId = null;
+
+    // Custom Sleek Dropdown Component
+    function createCustomSelect({ containerId, options, value, onChange, placeholder = "Select option" }) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const selected = options.find(o => String(o.value) === String(value)) || options[0];
+      const currentVal = selected ? selected.value : "";
+      const currentLabel = selected ? selected.label : placeholder;
+      const uid = "csel_" + Math.random().toString(36).slice(2, 8);
+
+      container.innerHTML = `
+        <div class="relative custom-select-root" id="${uid}" data-value="${currentVal}">
+          <button type="button" onclick="toggleCustomSelect('${uid}')"
+            class="w-full bg-slate-50 hover:bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 flex items-center justify-between gap-2 transition focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <span class="truncate">${currentLabel}</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 csel-arrow"></i>
+          </button>
+          <div class="csel-menu hidden absolute left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-2xl shadow-xl py-1.5 z-40 max-h-60 overflow-y-auto animate-enter">
+            ${options.map(opt => {
+              const isSelected = String(opt.value) === String(currentVal);
+              return `
+                <button type="button" data-opt-val="${opt.value}"
+                  class="w-full text-left px-3.5 py-2 text-xs sm:text-sm flex items-center justify-between gap-2 transition ${isSelected ? "bg-indigo-50 text-indigo-700 font-bold" : "text-slate-700 hover:bg-slate-50 font-medium"}">
+                  <span class="truncate">${opt.label}</span>
+                  ${isSelected ? `<i data-lucide="check" class="w-4 h-4 text-indigo-600 shrink-0"></i>` : ""}
+                </button>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+
+      const root = document.getElementById(uid);
+      root.querySelectorAll("[data-opt-val]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const newVal = btn.getAttribute("data-opt-val");
+          onChange(newVal);
+          createCustomSelect({ containerId, options, value: newVal, onChange, placeholder });
+          lucide.createIcons();
+        });
+      });
+      lucide.createIcons();
+    }
+
+    function toggleCustomSelect(uid) {
+      document.querySelectorAll(".custom-select-root").forEach(el => {
+        if (el.id !== uid) {
+          el.querySelector(".csel-menu").classList.add("hidden");
+          el.querySelector(".csel-arrow").classList.remove("rotate-180");
+        }
+      });
+      const root = document.getElementById(uid);
+      if (!root) return;
+      root.querySelector(".csel-menu").classList.toggle("hidden");
+      root.querySelector(".csel-arrow").classList.toggle("rotate-180");
+    }
+
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".custom-select-root")) {
+        document.querySelectorAll(".csel-menu").forEach(m => m.classList.add("hidden"));
+        document.querySelectorAll(".csel-arrow").forEach(a => a.classList.remove("rotate-180"));
+      }
+    });
+
+    // Button Loading Spinner Utility
+    function setBtnLoading(btn, isLoading, loadingText = "Loading...") {
+      if (!btn) return;
+      if (isLoading) {
+        if (!btn.dataset.origHtml) btn.dataset.origHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.classList.add("opacity-75", "cursor-not-allowed");
+        btn.innerHTML = `
+          <svg class="animate-spin h-4 w-4 text-current shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>${loadingText}</span>
+        `;
+      } else {
+        btn.disabled = false;
+        btn.classList.remove("opacity-75", "cursor-not-allowed");
+        if (btn.dataset.origHtml) {
+          btn.innerHTML = btn.dataset.origHtml;
+          lucide.createIcons();
+        }
+      }
+    }
+
+    function showToast(msg, type = "success") {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      const styles = {
+        success: "bg-slate-900 text-white border-slate-700",
+        error: "bg-rose-600 text-white border-rose-500"
+      };
+      const icons = { success: "check-circle-2", error: "alert-circle" };
+      toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-xl border text-xs font-semibold animate-enter ${styles[type] || styles.success}`;
+      toast.innerHTML = `<i data-lucide="${icons[type] || 'check-circle-2'}" class="w-4 h-4 shrink-0"></i><span>${msg}</span>`;
+      container.appendChild(toast);
+      lucide.createIcons();
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transition = "opacity 0.25s ease";
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
+    function formatWaUrl(phone, text = "") {
+      let clean = String(phone || "").replace(/[^0-9]/g, "");
+      if (clean.startsWith("03")) clean = "92" + clean.slice(1);
+      return `https://wa.me/${clean}${text ? "?text=" + encodeURIComponent(text) : ""}`;
+    }
+
+    function getLocalDB() {
+      const raw = localStorage.getItem(LOCAL_DB_KEY);
+      return raw ? JSON.parse(raw) : { courses: [], students: [], groups: [], requests: [] };
+    }
+    function saveLocalDB(db) { localStorage.setItem(LOCAL_DB_KEY, JSON.stringify(db)); }
+
+    async function apiFetchAll() {
+      if (!SCRIPT_URL) return getLocalDB();
+      const res = await fetch(SCRIPT_URL + "?t=" + Date.now());
+      return await res.json();
+    }
+
+    async function apiSend(payload) {
+      if (!SCRIPT_URL) {
+        const db = getLocalDB();
+        if (payload.action === "registerStudent") {
+          const email = payload.email.toLowerCase();
+          const rollNo = payload.rollNo.toUpperCase();
+          if (!email.endsWith("@cfd.nu.edu.pk")) return { ok: false, error: "Please use your @cfd.nu.edu.pk email." };
+          if (db.students.some(s => s.rollNo === rollNo)) return { ok: false, error: "Roll Number already registered." };
+          const student = { rollNo, name: payload.name, email, whatsapp: payload.whatsapp || "", pin: payload.pin };
+          db.students.push(student);
+          saveLocalDB(db);
+          return { ok: true, student };
+        }
+        if (payload.action === "loginStudent") {
+          const s = db.students.find(x => x.rollNo === payload.rollNo.toUpperCase() && x.pin === payload.pin);
+          if (!s) return { ok: false, error: "Invalid Roll Number or PIN." };
+          return { ok: true, student: s };
+        }
+        if (payload.action === "createGroup") {
+          const exists = db.groups.some(g => g.courseId === payload.courseId && g.members.some(m => m.rollNo === payload.leaderRollNo));
+          if (exists) return { ok: false, error: "You are already registered in a group for this course." };
+          db.groups.push({
+            groupId: payload.groupId,
+            courseId: payload.courseId,
+            slotNo: Number(payload.slotNo),
+            groupName: payload.groupName,
+            leaderRollNo: payload.leaderRollNo,
+            members: payload.members,
+            customData: payload.customData,
+            lookingForPartner: Boolean(payload.lookingForPartner)
+          });
+          saveLocalDB(db);
+          return { ok: true };
+        }
+        if (payload.action === "updateGroup") {
+          const g = db.groups.find(x => x.groupId === payload.groupId);
+          if (g) {
+            g.groupName = payload.groupName;
+            g.customData = payload.customData;
+            g.lookingForPartner = Boolean(payload.lookingForPartner);
+          }
+          saveLocalDB(db);
+          return { ok: true };
+        }
+        if (payload.action === "deleteGroup") {
+          db.groups = db.groups.filter(x => x.groupId !== payload.groupId);
+          db.requests = db.requests.filter(x => x.groupId !== payload.groupId);
+          saveLocalDB(db);
+          return { ok: true };
+        }
+        if (payload.action === "sendRequest") {
+          if (db.requests.some(r => r.groupId === payload.groupId && r.senderRollNo === payload.senderRollNo && r.status === "PENDING")) {
+            return { ok: false, error: "Request already sent." };
+          }
+          db.requests.push({ ...payload, status: "PENDING" });
+          saveLocalDB(db);
+          return { ok: true };
+        }
+        if (payload.action === "respondRequest") {
+          const req = db.requests.find(r => r.requestId === payload.requestId);
+          if (!req) return { ok: false, error: "Request not found." };
+          if (payload.decision === "REJECT") {
+            req.status = "REJECTED";
+            saveLocalDB(db);
+            return { ok: true };
+          }
+          const grp = db.groups.find(g => g.groupId === req.groupId);
+          const crs = db.courses.find(c => c.courseId === req.courseId);
+          if (grp && crs && grp.members.length < crs.maxMembers) {
+            grp.members.push({
+              rollNo: req.senderRollNo,
+              name: req.senderName,
+              email: req.senderEmail,
+              whatsapp: req.senderWhatsApp || ""
+            });
+            grp.lookingForPartner = grp.members.length < crs.maxMembers;
+            req.status = "ACCEPTED";
+          }
+          saveLocalDB(db);
+          return { ok: true };
+        }
+      }
+
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      return await res.json();
+    }
+
+    function switchAuthTab(tab) {
+      const isLogin = tab === "login";
+      document.getElementById("loginForm").classList.toggle("hidden", !isLogin);
+      document.getElementById("registerForm").classList.toggle("hidden", isLogin);
+      document.getElementById("authTabLogin").className = isLogin
+        ? "py-3 rounded-2xl bg-white text-indigo-600 shadow-sm transition"
+        : "py-3 rounded-2xl text-slate-500 hover:text-slate-800 transition";
+      document.getElementById("authTabRegister").className = !isLogin
+        ? "py-3 rounded-2xl bg-white text-indigo-600 shadow-sm transition"
+        : "py-3 rounded-2xl text-slate-500 hover:text-slate-800 transition";
+    }
+
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("regEmail").value.trim().toLowerCase();
+      if (!email.endsWith("@cfd.nu.edu.pk")) {
+        showToast("Please use your official @cfd.nu.edu.pk email.", "error");
+        return;
+      }
+      const btn = document.getElementById("regSubmitBtn");
+      setBtnLoading(btn, true, "Creating Account...");
+      try {
+        const res = await apiSend({
+          action: "registerStudent",
+          name: document.getElementById("regName").value.trim(),
+          rollNo: document.getElementById("regRoll").value.trim().toUpperCase(),
+          email,
+          whatsapp: document.getElementById("regWhatsApp").value.trim(),
+          pin: document.getElementById("regPin").value.trim()
+        });
+        if (!res.ok) return showToast(res.error, "error");
+        currentUser = res.student;
+        localStorage.setItem("fast_student_user", JSON.stringify(currentUser));
+        showToast("Registration complete!");
+        enterDashboard();
+      } catch (err) {
+        showToast("Connection error: " + err.message, "error");
+      } finally {
+        setBtnLoading(btn, false);
+      }
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("loginSubmitBtn");
+      setBtnLoading(btn, true, "Signing In...");
+      try {
+        const res = await apiSend({
+          action: "loginStudent",
+          rollNo: document.getElementById("loginRoll").value.trim().toUpperCase(),
+          pin: document.getElementById("loginPin").value.trim()
+        });
+        if (!res.ok) return showToast(res.error, "error");
+        currentUser = res.student;
+        localStorage.setItem("fast_student_user", JSON.stringify(currentUser));
+        enterDashboard();
+      } catch (err) {
+        showToast("Connection error: " + err.message, "error");
+      } finally {
+        setBtnLoading(btn, false);
+      }
+    });
+
+    function logoutStudent() {
+      localStorage.removeItem("fast_student_user");
+      currentUser = null;
+      location.reload();
+    }
+
+    function enterDashboard() {
+      document.getElementById("authView").classList.add("hidden");
+      document.getElementById("dashboardView").classList.remove("hidden");
+      document.getElementById("userHeaderBadge").classList.remove("hidden");
+      document.getElementById("loggedUserLabel").textContent = `${currentUser.rollNo} • ${currentUser.name}`;
+      refreshPortal();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      if (currentUser) enterDashboard();
+    });
+
+    async function refreshPortal(btnEl = null) {
+      const loader = document.getElementById("topLoader");
+      loader.classList.remove("hidden");
+      if (btnEl) setBtnLoading(btnEl, true, "Refreshing...");
+      try {
+        const data = await apiFetchAll();
+        portalData = {
+          courses: data.courses || [],
+          students: data.students || [],
+          groups: data.groups || [],
+          requests: data.requests || []
+        };
+        renderCourseDropdown();
+        renderIncomingRequests();
+        lucide.createIcons();
+      } catch (err) {
+        showToast("Failed to sync: " + err.message, "error");
+      } finally {
+        loader.classList.add("hidden");
+        if (btnEl) setBtnLoading(btnEl, false);
+      }
+    }
+
+    function renderCourseDropdown() {
+      if (!portalData.courses.length) {
+        document.getElementById("noCoursesMsg").classList.remove("hidden");
+        document.getElementById("courseContent").classList.add("hidden");
+        return;
+      }
+      document.getElementById("noCoursesMsg").classList.add("hidden");
+      document.getElementById("courseContent").classList.remove("hidden");
+
+      if (!selectedCourseId || !portalData.courses.some(c => c.courseId === selectedCourseId)) {
+        selectedCourseId = portalData.courses[0].courseId;
+      }
+
+      createCustomSelect({
+        containerId: "studentCourseDropdownWrap",
+        value: selectedCourseId,
+        options: portalData.courses.map(c => ({
+          value: c.courseId,
+          label: `${c.courseCode} — ${c.courseName} (${c.status})`
+        })),
+        onChange: (val) => {
+          selectedCourseId = val;
+          onCourseChange();
+        }
+      });
+
+      onCourseChange();
+    }
+
+    function getSortedGroupsForCourse(courseId) {
+      return portalData.groups
+        .filter(g => g.courseId === courseId)
+        .sort((a, b) => Number(a.slotNo || 0) - Number(b.slotNo || 0));
+    }
+
+    function onCourseChange() {
+      isEditingMyGroup = false;
+      const course = portalData.courses.find(c => c.courseId === selectedCourseId);
+      if (!course) return;
+
+      const courseGroups = getSortedGroupsForCourse(selectedCourseId);
+      const openGroupsCount = courseGroups.filter(g => g.lookingForPartner).length;
+
+      document.getElementById("courseMetaBox").innerHTML = `
+        <span class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-bold ${course.status === "OPEN" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}">
+          <span class="w-1.5 h-1.5 rounded-full ${course.status === "OPEN" ? "bg-emerald-600" : "bg-rose-600"}"></span>
+          ${course.status === "OPEN" ? "Registration Open" : "Closed"}
+        </span>
+        <span class="text-xs font-mono bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-full font-bold text-slate-700">
+          Total Groups: ${courseGroups.length}
+        </span>
+        <span class="text-xs font-mono bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1.5 rounded-full font-bold">
+          Open: ${openGroupsCount}
+        </span>
+      `;
+
+      renderMyGroupSection(course, courseGroups);
+      renderPartnerBoard(course, courseGroups);
+      renderGroupsOverview(course, courseGroups);
+      lucide.createIcons();
+    }
+
+    function renderMyGroupSection(course, courseGroups) {
+      const card = document.getElementById("myGroupCard");
+      const myGroupIdx = courseGroups.findIndex(g => g.members.some(m => m.rollNo === currentUser.rollNo));
+      const myGroup = myGroupIdx >= 0 ? courseGroups[myGroupIdx] : null;
+
+      if (myGroup && !isEditingMyGroup) {
+        const isLeader = myGroup.leaderRollNo === currentUser.rollNo;
+        const membersHtml = myGroup.members.map(m => `
+          <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-mono font-bold bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded">${m.rollNo}</span>
+              <span class="font-bold text-slate-800">${m.name}</span>
+              ${m.rollNo === myGroup.leaderRollNo ? '<span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">Leader</span>' : ""}
+            </div>
+            ${m.whatsapp ? `
+              <a href="${formatWaUrl(m.whatsapp)}" target="_blank"
+                class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg font-bold transition">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WA
+              </a>` : ""}
+          </div>
+        `).join("");
+
+        const customHtml = Object.entries(myGroup.customData || {})
+          .filter(([k]) => k.trim().toLowerCase() !== "group name")
+          .map(([k, v]) => `
+            <div class="text-xs bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+              <span class="text-slate-400 font-bold uppercase tracking-wider block text-[10px]">${k}</span>
+              <span class="font-semibold text-slate-800 mt-0.5 block">${v}</span>
+            </div>
+          `).join("");
+
+        card.innerHTML = `
+          <div class="bg-gradient-to-br from-indigo-600 to-violet-700 text-white p-5 rounded-2xl mb-5 shadow-md shadow-indigo-600/20">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-extrabold bg-white/20 backdrop-blur px-2.5 py-1 rounded-lg">GROUP #${myGroupIdx + 1}</span>
+              ${isLeader ? `
+                <button onclick="enableEditGroup()" class="inline-flex items-center gap-1 text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg font-bold transition">
+                  <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Edit
+                </button>` : ""}
+            </div>
+            <h3 class="text-xl font-extrabold mt-3 tracking-tight">${myGroup.groupName}</h3>
+            <p class="text-xs text-indigo-100 mt-1 flex items-center gap-1.5">
+              <i data-lucide="${myGroup.lookingForPartner ? "user-plus" : "shield-check"}" class="w-3.5 h-3.5"></i>
+              ${myGroup.lookingForPartner ? "Open for Partner (Listed on Partner Board)" : "Team Complete"}
+            </p>
+          </div>
+
+          <div class="space-y-2 mb-4">
+            <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Group Members (${myGroup.members.length}/${course.maxMembers})</p>
+            ${membersHtml}
+          </div>
+
+          <div class="space-y-2 mb-5">${customHtml}</div>
+
+          ${isLeader ? `
+            <button onclick="openDeleteGroupModal('${myGroup.groupId}')"
+              class="w-full inline-flex items-center justify-center gap-1.5 text-xs text-rose-600 hover:bg-rose-50 border border-rose-200 py-2.5 rounded-xl font-bold transition">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              <span>Delete Group</span>
+            </button>
+          ` : ""}
+        `;
+        return;
+      }
+
+      if (course.status !== "OPEN" && !myGroup) {
+        card.innerHTML = `
+          <div class="text-center py-10 space-y-2">
+            <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center mx-auto">
+              <i data-lucide="lock" class="w-6 h-6"></i>
+            </div>
+            <p class="text-sm font-bold text-rose-700">Registration Closed</p>
+            <p class="text-xs text-slate-500">New group registrations are currently closed for this course.</p>
+          </div>`;
+        return;
+      }
+
+      // Filter out any duplicate "Group Name" custom field so Group Name is ONLY shown once!
+      const filteredCustomFields = (course.customFields || []).filter(
+        f => String(f.label || "").trim().toLowerCase() !== "group name"
+      );
+
+      const customFieldsInputs = filteredCustomFields.map((f, idx) => {
+        const existingVal = myGroup && myGroup.customData ? (myGroup.customData[f.label] || "") : "";
+        if (f.type === "select") {
+          const cfSelectId = `cf_custom_sel_${idx}`;
+          setTimeout(() => {
+            createCustomSelect({
+              containerId: cfSelectId,
+              value: existingVal || (f.options && f.options[0]) || "",
+              options: (f.options || []).map(o => ({ value: o, label: o })),
+              onChange: (val) => {
+                const hiddenEl = document.getElementById(cfSelectId + "_val");
+                if (hiddenEl) hiddenEl.value = val;
+              }
+            });
+          }, 0);
+
+          return `
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">${f.label} ${f.required ? "*" : ""}</label>
+              <input type="hidden" id="${cfSelectId}_val" data-cf-label="${f.label}" class="cf-input" value="${existingVal || (f.options && f.options[0]) || ""}" />
+              <div id="${cfSelectId}"></div>
+            </div>
+          `;
+        }
+        if (f.type === "textarea") {
+          return `
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">${f.label} ${f.required ? "*" : ""}</label>
+              <textarea data-cf-label="${f.label}" rows="3" ${f.required ? "required" : ""}
+                class="cf-input w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">${existingVal}</textarea>
+            </div>
+          `;
+        }
+        return `
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">${f.label} ${f.required ? "*" : ""}</label>
+            <input type="text" data-cf-label="${f.label}" value="${existingVal}" ${f.required ? "required" : ""}
+              class="cf-input w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          </div>
+        `;
+      }).join("");
+
+      const defaultLooking = myGroup ? myGroup.lookingForPartner : (course.maxMembers > 1);
+
+      card.innerHTML = `
+        <div class="flex items-center gap-2.5 mb-1">
+          <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+            <i data-lucide="${myGroup ? "edit-3" : "folder-plus"}" class="w-4 h-4"></i>
+          </div>
+          <h3 class="text-base font-extrabold text-slate-900">${myGroup ? "Edit Group Details" : "Register Your Group"}</h3>
+        </div>
+        <p class="text-xs text-slate-500 mb-5">${myGroup ? "Update your group details or partner availability." : "Enter your group name, optional partner, and project details."}</p>
+
+        <form id="groupActionForm" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Group Name *</label>
+            <input type="text" id="grpName" required value="${myGroup ? myGroup.groupName : ""}" placeholder="e.g. Alpha Coders"
+              class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+          </div>
+
+          ${!myGroup && course.maxMembers > 1 ? `
+            <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-700">Already have a partner? <span class="text-slate-400 font-normal">(Optional)</span></span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <input type="text" id="partnerRollInput" placeholder="Partner Roll No (e.g. 25P-0020)"
+                  class="w-full font-mono uppercase bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+                <input type="text" id="partnerNameInput" placeholder="Partner Full Name"
+                  class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+              </div>
+            </div>
+          ` : ""}
+
+          ${customFieldsInputs}
+
+          ${course.maxMembers > 1 ? `
+            <label class="flex items-start gap-3 p-3.5 bg-amber-50/80 border border-amber-200 rounded-2xl cursor-pointer">
+              <input type="checkbox" id="grpLooking" class="mt-0.5 rounded text-amber-600 focus:ring-amber-500" ${defaultLooking ? "checked" : ""} />
+              <span class="text-xs text-amber-950 leading-relaxed">
+                <strong>Open for Partner</strong><br/>
+                Show my group on the Partner Board so classmates can send a partner request or message on WhatsApp.
+              </span>
+            </label>
+          ` : ""}
+
+          <div class="flex gap-2.5 pt-2">
+            ${myGroup ? `<button type="button" onclick="onCourseChange()" class="flex-1 border border-slate-300 hover:bg-slate-50 py-2.5 rounded-xl text-xs font-bold">Cancel</button>` : ""}
+            <button type="submit" id="saveGroupBtn"
+              class="flex-1 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white py-3 rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-indigo-600/20 transition flex items-center justify-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span>${myGroup ? "Save Changes" : "Register Group"}</span>
+            </button>
+          </div>
+        </form>
+      `;
+
+      document.getElementById("groupActionForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("saveGroupBtn");
+        setBtnLoading(btn, true, myGroup ? "Saving..." : "Registering...");
+
+        try {
+          const customData = {};
+          document.querySelectorAll("#groupActionForm .cf-input").forEach(el => {
+            customData[el.getAttribute("data-cf-label")] = el.value.trim();
+          });
+          const lookingEl = document.getElementById("grpLooking");
+          let lookingForPartner = lookingEl ? lookingEl.checked : false;
+
+          if (myGroup) {
+            const res = await apiSend({
+              action: "updateGroup",
+              groupId: myGroup.groupId,
+              groupName: document.getElementById("grpName").value.trim(),
+              customData,
+              lookingForPartner
+            });
+            if (!res.ok) return showToast(res.error, "error");
+            showToast("Group details updated!");
+            isEditingMyGroup = false;
+            await refreshPortal();
+          } else {
+            const members = [{ ...currentUser }];
+            const pRollEl = document.getElementById("partnerRollInput");
+            const pNameEl = document.getElementById("partnerNameInput");
+            const pRoll = pRollEl ? pRollEl.value.trim().toUpperCase() : "";
+            const pName = pNameEl ? pNameEl.value.trim() : "";
+
+            if (pRoll || pName) {
+              if (!pRoll || !pName) {
+                setBtnLoading(btn, false);
+                return showToast("Please enter both Partner Roll No and Name, or leave both blank.", "error");
+              }
+              if (pRoll === currentUser.rollNo) {
+                setBtnLoading(btn, false);
+                return showToast("Partner Roll No cannot be your own Roll No.", "error");
+              }
+              const alreadyInTeam = courseGroups.some(g => g.members.some(m => m.rollNo === pRoll));
+              if (alreadyInTeam) {
+                setBtnLoading(btn, false);
+                return showToast(`${pRoll} is already registered in another group.`, "error");
+              }
+              const registeredPartner = portalData.students.find(s => s.rollNo === pRoll);
+              members.push({
+                rollNo: pRoll,
+                name: pName,
+                email: registeredPartner ? registeredPartner.email : "",
+                whatsapp: registeredPartner ? registeredPartner.whatsapp : ""
+              });
+              if (members.length >= course.maxMembers) lookingForPartner = false;
+            }
+
+            const res = await apiSend({
+              action: "createGroup",
+              groupId: "GRP_" + Date.now(),
+              courseId: course.courseId,
+              slotNo: Date.now(),
+              groupName: document.getElementById("grpName").value.trim(),
+              leaderRollNo: currentUser.rollNo,
+              members,
+              customData,
+              lookingForPartner
+            });
+            if (!res.ok) return showToast(res.error, "error");
+            showToast("Group registered successfully!");
+            await refreshPortal();
+          }
+        } catch (err) {
+          showToast("Network error: " + err.message, "error");
+        } finally {
+          setBtnLoading(btn, false);
+        }
+      });
+    }
+
+    function enableEditGroup() {
+      isEditingMyGroup = true;
+      const course = portalData.courses.find(c => c.courseId === selectedCourseId);
+      const courseGroups = getSortedGroupsForCourse(selectedCourseId);
+      renderMyGroupSection(course, courseGroups);
+      lucide.createIcons();
+    }
+
+    function openDeleteGroupModal(groupId) {
+      pendingDeleteGroupId = groupId;
+      document.getElementById("deleteGroupModal").classList.remove("hidden");
+      document.getElementById("deleteGroupModal").classList.add("flex");
+    }
+
+    function closeDeleteGroupModal() {
+      document.getElementById("deleteGroupModal").classList.add("hidden");
+      document.getElementById("deleteGroupModal").classList.remove("flex");
+      pendingDeleteGroupId = null;
+    }
+
+    async function executeDeleteMyGroup(btn) {
+      if (!pendingDeleteGroupId) return;
+      setBtnLoading(btn, true, "Deleting...");
+      try {
+        const res = await apiSend({ action: "deleteGroup", groupId: pendingDeleteGroupId });
+        if (res.ok) {
+          showToast("Group deleted.");
+          closeDeleteGroupModal();
+          await refreshPortal();
+        }
+      } finally {
+        setBtnLoading(btn, false);
+      }
+    }
+
+    function renderPartnerBoard(course, courseGroups) {
+      const board = document.getElementById("partnerBoard");
+      const openGroups = courseGroups.filter(g => g.lookingForPartner && g.members.length < course.maxMembers);
+      document.getElementById("openPartnerCount").textContent = `${openGroups.length} Open`;
+
+      const alreadyInCourse = courseGroups.some(g => g.members.some(m => m.rollNo === currentUser.rollNo));
+
+      if (!openGroups.length) {
+        board.innerHTML = `
+          <div class="p-6 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-center text-xs text-slate-400">
+            No groups are currently open for a partner in this course.
+          </div>`;
+        return;
+      }
+
+      board.innerHTML = openGroups.map(g => {
+        const leader = g.members[0] || {};
+        const pendingReq = portalData.requests.some(r =>
+          r.groupId === g.groupId && r.senderRollNo === currentUser.rollNo && r.status === "PENDING"
+        );
+        const waText = `Assalam-o-Alaikum ${leader.name}, I saw your group "${g.groupName}" for ${course.courseCode} on the FAST Project Portal. Can we partner up? - ${currentUser.name} (${currentUser.rollNo})`;
+
+        const customSnippet = Object.entries(g.customData || {})
+          .filter(([k]) => k.trim().toLowerCase() !== "group name")
+          .map(([k, v]) => `<span class="text-[11px] bg-white border border-slate-200 px-2.5 py-0.5 rounded-lg"><strong>${k}:</strong> ${v}</span>`)
+          .join(" ");
+
+        return `
+          <div class="p-4 rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50/70 to-orange-50/40 flex flex-wrap items-center justify-between gap-3.5">
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="font-extrabold text-sm text-slate-900">${g.groupName}</span>
+                <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full">Open for Partner</span>
+              </div>
+              <p class="text-xs text-slate-600">Leader: <strong class="text-slate-900">${leader.name}</strong> <span class="font-mono text-indigo-700 font-semibold">(${leader.rollNo})</span></p>
+              <div class="flex flex-wrap gap-1.5 pt-0.5">${customSnippet}</div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              ${leader.whatsapp ? `
+                <a href="${formatWaUrl(leader.whatsapp, waText)}" target="_blank"
+                  class="inline-flex items-center gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-2 rounded-xl shadow-sm transition">
+                  <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                  <span>WhatsApp</span>
+                </a>
+              ` : ""}
+
+              ${!alreadyInCourse && course.status === "OPEN" ? (
+                pendingReq
+                  ? `<span class="inline-flex items-center gap-1 text-xs bg-slate-200 text-slate-600 px-3.5 py-2 rounded-xl font-bold">
+                      <i data-lucide="clock" class="w-3.5 h-3.5"></i> Pending
+                     </span>`
+                  : `<button onclick="openJoinModal('${g.groupId}', '${course.courseId}', '${g.groupName.replace(/'/g, "\'")}', '${leader.name.replace(/'/g, "\'")}')"
+                      class="inline-flex items-center gap-1.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3.5 py-2 rounded-xl shadow-sm transition">
+                      <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                      <span>Send Request</span>
+                    </button>`
+              ) : ""}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function openJoinModal(groupId, courseId, groupName, leaderName) {
+      pendingJoinTarget = { groupId, courseId };
+      document.getElementById("joinModalSubtitle").textContent = `Group "${groupName}" • Led by ${leaderName}`;
+      document.getElementById("joinNoteInput").value = "Assalam-o-Alaikum! I'd like to partner up with your group.";
+      document.getElementById("joinRequestModal").classList.remove("hidden");
+      document.getElementById("joinRequestModal").classList.add("flex");
+    }
+
+    function closeJoinModal() {
+      document.getElementById("joinRequestModal").classList.add("hidden");
+      document.getElementById("joinRequestModal").classList.remove("flex");
+      pendingJoinTarget = null;
+    }
+
+    async function submitJoinRequest(btn) {
+      if (!pendingJoinTarget) return;
+      setBtnLoading(btn, true, "Sending...");
+      try {
+        const res = await apiSend({
+          action: "sendRequest",
+          requestId: "REQ_" + Date.now(),
+          groupId: pendingJoinTarget.groupId,
+          courseId: pendingJoinTarget.courseId,
+          senderRollNo: currentUser.rollNo,
+          senderName: currentUser.name,
+          senderEmail: currentUser.email,
+          senderWhatsApp: currentUser.whatsapp || "",
+          note: document.getElementById("joinNoteInput").value.trim()
+        });
+        if (!res.ok) return showToast(res.error, "error");
+        showToast("Partner request sent!");
+        closeJoinModal();
+        await refreshPortal();
+      } finally {
+        setBtnLoading(btn, false);
+      }
+    }
+
+    function renderIncomingRequests() {
+      const myLeaderGroupIds = new Set(
+        portalData.groups.filter(g => g.leaderRollNo === currentUser.rollNo).map(g => g.groupId)
+      );
+      const pending = portalData.requests.filter(r => myLeaderGroupIds.has(r.groupId) && r.status === "PENDING");
+
+      const box = document.getElementById("incomingRequestsBox");
+      const list = document.getElementById("incomingRequestsList");
+      if (!pending.length) {
+        box.classList.add("hidden");
+        return;
+      }
+
+      box.classList.remove("hidden");
+      list.innerHTML = pending.map(r => {
+        const grp = portalData.groups.find(g => g.groupId === r.groupId);
+        const crs = portalData.courses.find(c => c.courseId === r.courseId);
+        return `
+          <div class="bg-white p-4 rounded-2xl border border-amber-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded">${r.senderRollNo}</span>
+                <span class="text-xs font-extrabold text-slate-900">${r.senderName}</span>
+              </div>
+              <p class="text-[11px] text-slate-500">Wants to join <strong>${grp ? grp.groupName : ""}</strong> (${crs ? crs.courseCode : ""})</p>
+              ${r.note ? `<p class="text-xs text-slate-600 italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">"${r.note}"</p>` : ""}
+            </div>
+            <div class="flex items-center gap-1.5">
+              ${r.senderWhatsApp ? `
+                <a href="${formatWaUrl(r.senderWhatsApp)}" target="_blank" title="Chat on WhatsApp"
+                  class="inline-flex items-center gap-1 text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1.5 rounded-xl font-bold">
+                  <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                </a>` : ""}
+              <button onclick="respondReq(this, '${r.requestId}', 'ACCEPT')"
+                class="inline-flex items-center gap-1 text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl font-bold transition">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i> Accept
+              </button>
+              <button onclick="respondReq(this, '${r.requestId}', 'REJECT')"
+                class="inline-flex items-center gap-1 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl font-bold transition">
+                Decline
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function respondReq(btn, requestId, decision) {
+      setBtnLoading(btn, true, decision === "ACCEPT" ? "Adding..." : "Declining...");
+      try {
+        const res = await apiSend({ action: "respondRequest", requestId, decision });
+        if (!res.ok) return showToast(res.error, "error");
+        showToast(decision === "ACCEPT" ? "Partner added to your group!" : "Request declined");
+        await refreshPortal();
+      } finally {
+        setBtnLoading(btn, false);
+      }
+    }
+
+    function renderGroupsOverview(course, courseGroups) {
+      const grid = document.getElementById("groupsOverviewGrid");
+      if (!courseGroups.length) {
+        grid.innerHTML = `
+          <div class="sm:col-span-2 p-6 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-center text-xs text-slate-400">
+            No groups have been registered for this course yet. Be the first!
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = courseGroups.map((g, idx) => {
+        const isMine = g.members.some(m => m.rollNo === currentUser.rollNo);
+        const isOpen = g.lookingForPartner && g.members.length < course.maxMembers;
+
+        return `
+          <div class="p-3.5 rounded-2xl border ${isMine ? "border-indigo-400 bg-indigo-50/70" : isOpen ? "border-amber-200 bg-amber-50/40" : "border-slate-200 bg-slate-50/70"} text-xs space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-mono font-extrabold text-slate-800">Group #${idx + 1}</span>
+              ${isMine
+                ? `<span class="text-[10px] bg-indigo-600 text-white px-2 py-0.5 rounded-full font-bold">Your Team</span>`
+                : isOpen
+                  ? `<span class="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full font-bold">Open</span>`
+                  : `<span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Complete</span>`
+              }
+            </div>
+            <div class="font-extrabold text-slate-900 truncate">${g.groupName}</div>
+            <div class="font-mono text-[11px] text-slate-600 truncate">${g.members.map(m => `${m.rollNo} (${m.name.split(" ")[0]})`).join(" • ")}</div>
+          </div>
+        `;
+      }).join("");
+    }
+  </script>
+</body>
+</html>

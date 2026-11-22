@@ -1,0 +1,19 @@
+# Netlify Configuration — FAST-NUCES Project Portal
+# Student Portal: https://your-site.netlify.app/
+# Admin Panel:    https://your-site.netlify.app/admin
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/index.html"
+  status = 200
+
+# Ensure GitHub updates reflect immediately without stale browser caching
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
