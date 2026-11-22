@@ -460,9 +460,9 @@
       <div class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1.5">Google Apps Script Web App URL</label>
-          <input type="url" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec"
-            class="w-full font-mono bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
-          <p class="text-[11px] text-slate-400 mt-1">Default URL is loaded from <code>config.js</code> on GitHub.</p>
+          <input type="url" id="scriptUrlInput" readonly
+            class="w-full font-mono bg-slate-100 text-slate-500 border border-slate-300 rounded-xl px-3 py-2.5 text-xs cursor-not-allowed focus:outline-none" />
+          <p class="text-[11px] text-slate-400 mt-1">Loaded automatically from <code>config.js</code>.</p>
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1.5">Change CR Admin PIN</label>
@@ -506,15 +506,15 @@
     const DEFAULT_SCRIPT_URL = CFG.SCRIPT_URL || "";
     const LOCAL_DB_KEY = "fast_cfd_project_portal_v3";
 
-    (function sanitizeCachedUrl() {
-      const saved = localStorage.getItem("fast_cr_script_url");
-      if (saved && saved.includes("/a/macros/")) localStorage.removeItem("fast_cr_script_url");
-    })();
+    // Clear any stale cached Script URL so config.js is always the single source of truth
+    localStorage.removeItem("fast_cr_script_url");
 
     let state = { courses: [], students: [], groups: [], requests: [], backupsCount: 0 };
     let filterState = { rosterCourse: "ALL", rosterStatus: "ALL", exportCourse: "" };
 
-    function getScriptUrl() { return localStorage.getItem("fast_cr_script_url") || DEFAULT_SCRIPT_URL; }
+    function getScriptUrl() {
+      return ((window.PORTAL_CONFIG && window.PORTAL_CONFIG.SCRIPT_URL) || DEFAULT_SCRIPT_URL || "").trim();
+    }
     function getAdminPin() { return localStorage.getItem("fast_cr_admin_pin") || CFG.DEFAULT_ADMIN_PIN || "1234"; }
 
     // Custom Sleek Dropdown Component
@@ -714,7 +714,8 @@
       badge.textContent = "Live Google Sheets Sync";
       badge.className = "text-xs text-emerald-300 font-medium";
       dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
-      const res = await fetch(url + "?t=" + Date.now());
+      const sep = url.includes("?") ? "&" : "?";
+      const res = await fetch(url + sep + "t=" + Date.now(), { redirect: "follow" });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "Failed to fetch");
       return data;
@@ -752,6 +753,7 @@
 
       const res = await fetch(url, {
         method: "POST",
+        redirect: "follow",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       });
@@ -1127,7 +1129,7 @@
               }
             </td>
             <td class="p-4 text-right">
-              <button onclick="adminDeleteGroup('${g.groupId}', '${g.groupName.replace(/'/g, "\'")}')"
+              <button onclick="adminDeleteGroup('${g.groupId}', '${g.groupName.replace(/'/g, "\\'")}')"
                 class="inline-flex items-center gap-1 text-xs text-rose-600 hover:bg-rose-50 px-2.5 py-1.5 rounded-lg font-bold transition">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Remove
               </button>
@@ -1564,7 +1566,7 @@
       }, 250);
     }
 
-    // Settings Modal
+    // Settings Modal (URL strictly sourced from config.js; PIN saved locally)
     function openSettingsModal() {
       document.getElementById("scriptUrlInput").value = getScriptUrl();
       document.getElementById("newAdminPinInput").value = getAdminPin();
@@ -1577,14 +1579,12 @@
     }
     async function saveSettings(btn) {
       setBtnLoading(btn, true, "Saving...");
-      const url = document.getElementById("scriptUrlInput").value.trim();
       const pin = document.getElementById("newAdminPinInput").value.trim();
-      if (url) localStorage.setItem("fast_cr_script_url", url);
-      else localStorage.removeItem("fast_cr_script_url");
+      localStorage.removeItem("fast_cr_script_url");
       if (pin) localStorage.setItem("fast_cr_admin_pin", pin);
       setBtnLoading(btn, false);
       closeSettingsModal();
-      showToast("Settings saved!");
+      showToast("Admin PIN updated!");
       await loadAllData();
     }
   </script>
